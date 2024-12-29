@@ -44,12 +44,18 @@ enum Operation {
     case add, subtract, multiply, divide, none
 }
 
+enum DivisionError: Error {
+    case dividedByZero
+}
+
 struct ContentView: View {
     
     @State var value = "0"
     @State var displayValue = "0"
     @State var currentOperation : Operation = .none
     @State var runningNumber : Float = 0.0
+    @State var isFirstOperation = true
+    @State var valueUpdatedByUser = false
     
     let buttons: [[CalcBtn]] = [
         [.clear, .negativePositive, .percent, .divide],
@@ -106,32 +112,113 @@ struct ContentView: View {
     func didTap(item: CalcBtn) {
         switch item {
         case .add:
-            self.addTwoValues()
-            self.value = "0"
+            if self.isFirstOperation {
+                self.isFirstOperation = false
+                self.runningNumber = Float(self.value) ?? 0
+                self.value = "0"
+                self.valueUpdatedByUser = false
+                self.displayValue = "0"
+            }
+            else {
+                self.equalOperation()
+                //                self.runningNumber += Float(self.value) ?? 0
+                //                self.value = "0"
+                //                self.displayValue = "\(self.runningNumber)"
+            }
             self.currentOperation = .add
-//            self.runningNumber = Float(self.value) ?? 0
+            
+            //            self.equalOperation()
+            //            self.currentOperation = .add
+            //            self.equalOperation()
+            //            self.value = "0"
+            
+            //            self.runningNumber = Float(self.value) ?? 0
         case  .subtract:
+            if self.isFirstOperation {
+                self.isFirstOperation = false
+                self.runningNumber = Float(self.value) ?? 0
+                self.value = "0"
+                self.valueUpdatedByUser = false
+                self.displayValue = "0"
+            }
+            else {
+                self.equalOperation()
+                //                self.runningNumber -= Float(self.value) ?? 0
+                //                self.value = "0"
+                //                self.displayValue = "\(self.runningNumber)"
+            }
             self.currentOperation = .subtract
-            self.runningNumber = Float(self.value) ?? 0
-            self.value = "0"
-            break
+            
+            //            self.equalOperation()
+            //            self.currentOperation = .subtract
+            //            self.equalOperation()
+            //            self.value = "0"
+            //            self.currentOperation = .subtract
+            //            self.runningNumber = Float(self.value) ?? 0
+            //            self.value = "0"
+            //            break
         case .divide:
+            if self.isFirstOperation {
+                self.isFirstOperation = false
+                self.runningNumber = Float(self.value) ?? 0
+                self.value = "0"
+                self.valueUpdatedByUser = false
+                self.displayValue = "0"
+            }
+            else {
+                self.equalOperation()
+                //                self.runningNumber /= Float(self.value) ?? 0
+                //                self.value = "0"
+                //                self.displayValue = "\(self.runningNumber)"
+            }
             self.currentOperation = .divide
-            self.runningNumber = Float(self.value) ?? 0
-            self.value = "0"
-            break
+            
+            //            self.equalOperation()
+            //            self.currentOperation = .divide
+            //            self.equalOperation()
+            //            self.value = "0"
+            
+            //            self.currentOperation = .divide
+            //            self.runningNumber = Float(self.value) ?? 0
+            //            self.value = "0"
+            //            break
         case .multiply:
+            if self.isFirstOperation {
+                self.isFirstOperation = false
+                self.runningNumber = Float(self.value) ?? 0
+                self.value = "0"
+                self.valueUpdatedByUser = false
+                self.displayValue = "0"
+            }
+            else {
+                self.equalOperation()
+            }
             self.currentOperation = .multiply
-            self.runningNumber = Float(self.value) ?? 0
-            self.value = "0"
-            break
+            
+            //            self.equalOperation()
+            //            self.currentOperation = .multiply
+            //            self.equalOperation()
+            //            self.value = "0"
+            
+            //            self.currentOperation = .multiply
+            //            self.runningNumber = Float(self.value) ?? 0
+            //            self.value = "0"
+            //            break
         case .equal:
             self.equalOperation()
+            
+            //            self.isFirstOperation = true
+            //            value = "0"
+            ////            runningNumber = 0
+            //            self.currentOperation = .none
+            //            self.displayValue = "\(self.runningNumber)"
         case .clear:
             self.value = "0"
+            self.valueUpdatedByUser = false
             self.displayValue = "0"
             self.runningNumber = 0
             self.currentOperation = .none
+            self.isFirstOperation = true
             break
         case .decimal, .negativePositive, .percent:
             break
@@ -145,35 +232,106 @@ struct ContentView: View {
                 self.value = "\(self.value)\(number)"
                 self.displayValue = "\(self.displayValue)\(number)"
             }
+            self.valueUpdatedByUser = true
+            //            if self.currentOperation == .none {
+            //                self.runningNumber = 0
+            //            }
         }
     }
     
     func addTwoValues() {
-        if self.currentOperation == .add {
-            
-        }
-        let currentValue = Float(self.value) ?? 0
-        self.runningNumber += currentValue
-//        self.value = "\(self.runningNumber)"
+        //        print("hiii")
+        self.runningNumber += Float(self.value) ?? 0
+        self.value = "0"
+        self.valueUpdatedByUser = false
         self.displayValue = "\(self.runningNumber)"
+        self.currentOperation = .none
+        //        self.isFirstOperation = true
+        
+        //        self.isFirstOperation = false
+        //        let currentValue = Float(self.value) ?? 0
+        //        if self.isFirstOperation {
+        //            self.runningNumber = currentValue
+        //            isFirstOperation = false
+        //        }
+        //        else {
+        //            self.runningNumber += currentValue
+        //        }
+        ////        self.runningNumber += currentValue
+        //        //        self.value = "\(self.runningNumber)"
+        //        self.displayValue = "\(self.runningNumber)"
+        //        self.value = "0"
     }
     
     func subtractTwoValues() {
-        let currentValue = Float(self.value) ?? 0
-        self.runningNumber -= currentValue
-        self.value = "\(self.runningNumber)"
+        self.runningNumber -= Float(self.value) ?? 0
+        self.value = "0"
+        self.valueUpdatedByUser = false
+        self.displayValue = "\(self.runningNumber)"
+        self.currentOperation = .none
+        
+        //        let currentValue = Float(self.value) ?? 0
+        //        if self.isFirstOperation {
+        //            self.runningNumber = currentValue
+        //            isFirstOperation = false
+        //        }
+        //        else {
+        //            self.runningNumber -= currentValue
+        //        }
+        //        //        self.value = "\(self.runningNumber)"
+        //        self.displayValue = "\(self.runningNumber)"
+        //        self.value = "0"
     }
     
     func multiplyTwoValues() {
-        let currentValue = Float(self.value) ?? 0
-        self.runningNumber *= currentValue
-        self.value = "\(self.runningNumber)"
+        if (valueUpdatedByUser) {
+            self.runningNumber *= Float(self.value) ?? 0
+            self.value = "0"
+            self.valueUpdatedByUser = false
+            self.displayValue = "\(self.runningNumber)"
+            self.currentOperation = .none
+        }
+        
+        //        let currentValue = Float(self.value) ?? 0
+        //        if self.isFirstOperation {
+        //            self.runningNumber = currentValue
+        //            isFirstOperation = false
+        //        }
+        //        else {
+        //            self.runningNumber *= currentValue
+        //        }
+        //        //        self.value = "\(self.runningNumber)"
+        //        self.displayValue = "\(self.runningNumber)"
+        //        self.value = "0"
     }
     
-    func divideTwoValues() {
-        let currentValue = Float(self.value) ?? 0
-        self.runningNumber /= currentValue
-        self.value = "\(self.runningNumber)"
+    func divideTwoValues() throws{
+        if self.value == "0" {
+            throw DivisionError.dividedByZero
+        }
+        else {
+            self.runningNumber /= Float(self.value) ?? 0
+            self.value = "0"
+            self.valueUpdatedByUser = false
+            self.displayValue = "\(self.runningNumber)"
+            self.currentOperation = .none
+        }
+        
+        //        let currentValue = Float(self.value) ?? 0
+        //        if currentValue == 0 {
+        //            throw DivisionError.dividedByZero
+        //        }
+        //        self.runningNumber /= currentValue
+        //        //        self.value = "\(self.runningNumber)"
+        //        self.displayValue = "\(self.runningNumber)"
+        //        self.value = "0"
+        
+        //        let currentValue = Float(self.value) ?? 0
+        //        if currentValue == 0 {
+        //            throw DivisionError.dividedByZero
+        //        }
+        //        self.runningNumber /= currentValue
+        //        self.value = "\(self.runningNumber)"
     }
     
     func equalOperation() {
@@ -182,7 +340,16 @@ struct ContentView: View {
         switch self.currentOperation {
         case .add: self.addTwoValues()// self.value = "\(runningValue + currentValue)"
         case .subtract: self.subtractTwoValues()//self.value = "\(runningValue - currentValue)"
-        case .divide: self.divideTwoValues() //self.value = "\(runningValue / currentValue)"
+        case .divide:
+            do {
+                try self.divideTwoValues() //self.value = "\(runningValue / currentValue)"
+            }
+            catch  DivisionError.dividedByZero{
+                print("cannot divide by zero")
+            }
+            catch {
+                print("unexpected division error")
+            }
         case .multiply: self.multiplyTwoValues() //self.value = "\(runningValue *  currentValue)"
         case .none:
             break
@@ -198,6 +365,15 @@ struct ContentView: View {
     
     func buttonHeight() -> CGFloat {
         return (UIScreen.main.bounds.width - (5*12)) / 4
+    }
+    
+    // create throwing function using throws keyword
+    func division(numerator: Int, denominator: Int) throws {
+        
+        // throw error if divide by 0
+        if denominator == 0 {
+            throw DivisionError.dividedByZero
+        }
     }
 }
 
